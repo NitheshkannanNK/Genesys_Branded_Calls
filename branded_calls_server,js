@@ -1,0 +1,50 @@
+'use strict';
+
+const express = require('express');
+//const 
+var brandedService = require('./branded_calls_service.js');
+
+const app = express();
+var bodyParser = require('body-parser'); 
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+
+
+app.get('/checkReachablity',(req,res) => {
+    let body = req.body;
+    brandedService.checkingReachablity(body);
+    console.log("CheckReachability Request",req.body); 
+    if(!body.deviceNumber){
+        res.status(500)
+           .send('Invalid/Missing Device Number');
+    }
+    res.sendStatus(200);
+});
+
+
+app.post('/verfiedCalls',(req,res) => {
+    let body = req.body;
+    brandedService.verfyingCalls(body);
+    console.log("VerfiedCalls Request",req.body); 
+    if(!body.deviceNumber || !body.brandNumber || !body.callReason){
+        res.status(500)
+           .send('Invalid/Missing Input');
+    }
+    res.sendStatus(200);
+});
+
+app.post('/stateMatching',(req,res) => {
+    let body = req.body;
+    console.log("StateMatching Request",req.body);
+    brandedService.stateMatching(body);
+    if(!body.deviceNumber || !body.brandNumber || !body.callState){
+        res.status(500)
+           .send('Invalid/Missing Input');
+    }
+    res.sendStatus(200);
+});
+
+
+app.listen(3000,() => console.log('Listening on port 3000'));
